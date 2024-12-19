@@ -6,11 +6,13 @@ abstract class Publication {
     private String title;
     private double price;
     private int copies;
+    private int soldCopies;
 
     public Publication(String title, double price, int copies) {
         this.title = title;
         this.price = price;
         this.copies = copies;
+        this.soldCopies = 0;
     }
 
     public String getTitle() {
@@ -34,8 +36,13 @@ abstract class Publication {
             System.out.println("Stock is not enough");
         } else {
             copies -= copiessold;
+            soldCopies += copiessold;
             System.out.println(copiessold + " of " + title + " sold");
         }
+    }
+
+    public double calculateTotalSale() {
+        return soldCopies * price;
     }
 
     public abstract void displaydetails();
@@ -70,17 +77,11 @@ class Book extends Publication {
 
 class Magazine extends Publication {
 
-    private int orderqty;
     private String currentissue;
 
-    public Magazine(String title, double price, int copies, int orderqty, String currentissue) {
+    public Magazine(String title, double price, int copies, String currentissue) {
         super(title, price, copies);
-        this.orderqty = orderqty;
         this.currentissue = currentissue;
-    }
-
-    public int getOrderqty() {
-        return orderqty;
     }
 
     public String getCurrentissue() {
@@ -118,25 +119,32 @@ public class PublicationTest {
 
         Book book = new Book(bookTitle, bookPrice, bookCopies, bookAuthor);
 
+        System.out.print("Enter the number of book copies sold: ");
+        int bookSold = scanner.nextInt();
+        book.salecopy(bookSold);
+
         System.out.print("Enter the title of the magazine: ");
         String magazineTitle = scanner.nextLine();
         System.out.print("Enter the price of the magazine: ");
         double magazinePrice = scanner.nextDouble();
         System.out.print("Enter the number of copies of the magazine: ");
         int magazineCopies = scanner.nextInt();
-        System.out.print("Enter the order quantity for the magazine: ");
-        int magazineOrderQty = scanner.nextInt();
-        scanner.nextLine();
         System.out.print("Enter the current issue of the magazine: ");
         String magazineIssue = scanner.nextLine();
 
-        Magazine magazine = new Magazine(magazineTitle, magazinePrice, magazineCopies, magazineOrderQty, magazineIssue);
+        Magazine magazine = new Magazine(magazineTitle, magazinePrice, magazineCopies, magazineIssue);
+
+        System.out.print("Enter the number of magazine copies sold: ");
+        int magazineSold = scanner.nextInt();
+        magazine.salecopy(magazineSold);
 
         System.out.println("\nDetails of the Book:");
         book.displaydetails();
+        System.out.println("Total Sale for Book: Rs. " + book.calculateTotalSale());
 
         System.out.println("\nDetails of the Magazine:");
         magazine.displaydetails();
+        System.out.println("Total Sale for Magazine: Rs. " + magazine.calculateTotalSale());
 
         scanner.close();
     }
